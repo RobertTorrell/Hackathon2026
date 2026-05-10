@@ -1,0 +1,22 @@
+services:
+  hackathon2026:
+    build: .
+    image: hackathon2026:latest
+    container_name: hackathon2026
+    restart: unless-stopped
+    ports:
+      - "1982:1982"
+    volumes:
+      - ./data:/app/data
+      - ./outputs:/app/outputs
+    environment:
+      APP_PORT: "1982"
+      DATA_DIR: /app/data
+      OUTPUT_DIR: /app/outputs
+      NICEGUI_STORAGE_SECRET: ${NICEGUI_STORAGE_SECRET:-change-this-secret}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:1982/health', timeout=5).read()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
